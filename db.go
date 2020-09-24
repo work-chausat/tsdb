@@ -626,6 +626,11 @@ func (db *DB) compact() (err error) {
 			break
 		}
 		mint := db.head.MinTime()
+		//adding data during the compact possible changes head min time
+		if db.head.minValidTime < mint {
+			mint = db.head.minValidTime
+		}
+
 		maxt := rangeForTimestamp(mint, db.head.chunkRange)
 
 		// Wrap head into a range that bounds all reads to it.
